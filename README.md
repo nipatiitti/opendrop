@@ -1,47 +1,175 @@
-# Svelte + TS + Vite
+# OpenDrop Game Controller
 
-This template should help get you started developing with Svelte and TypeScript in Vite.
+A web-based game controller for OpenDrop digital microfluidics hardware, allowing you to play games like Tetris using water droplets controlled by electrodes.
 
-## Recommended IDE Setup
+## 🎮 What is OpenDrop?
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+[OpenDrop](https://www.gaudi.ch/OpenDrop/) is an open-source digital microfluidics platform that uses electric fields to manipulate tiny water droplets on a grid of electrodes. This project bridges the gap between the physical OpenDrop hardware and interactive gaming by providing a web interface to control droplet movement and play games.
 
-## Need an official Svelte framework?
+## 💡 Inspiration
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+This project was inspired by [Steve Mould's YouTube video](https://www.youtube.com/watch?v=rf-efIZI_Dg) where he challenged developers to create games using the OpenDrop platform. The video demonstrates the fascinating possibilities of digital microfluidics and sparked the idea to turn water droplet manipulation into interactive gaming.
 
-## Technical considerations
+## ✨ Features
 
-**Why use this over SvelteKit?**
+- **Web Serial API Integration**: Direct communication with OpenDrop hardware through modern web browsers
+- **Real-time Game Visualization**: Live display of electrode states and droplet positions
+- **Tetris Implementation**: Play Tetris with water droplets as game pieces
+- **Configurable Settings**: Adjustable baud rates and communication speeds
+- **Extensible Game Framework**: Easy to add new games and gameplay mechanics
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
+## 🚀 Getting Started
 
-This template contains as little as possible to get started with Vite + TypeScript + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
+### Prerequisites
 
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
+- Modern web browser with Web Serial API support (Chrome, Edge, Opera)
+- OpenDrop hardware or compatible digital microfluidics device
+- Node.js and npm/yarn/bun for development
 
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
+### Installation
 
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
+1. Clone the repository:
 
-**Why include `.vscode/extensions.json`?**
+   ```bash
+   git clone <repository-url>
+   cd opendrop
+   ```
 
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
+2. Install dependencies:
 
-**Why enable `allowJs` in the TS template?**
+   ```bash
+   bun install
+   ```
 
-While `allowJs: false` would indeed prevent the use of `.js` files in the project, it does not prevent the use of JavaScript syntax in `.svelte` files. In addition, it would force `checkJs: false`, bringing the worst of both worlds: not being able to guarantee the entire codebase is TypeScript, and also having worse typechecking for the existing JavaScript. In addition, there are valid use cases in which a mixed codebase may be relevant.
+3. Start the development server:
 
-**Why is HMR not preserving my local component state?**
+   ```bash
+   bun run dev
+   ```
 
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
+4. Open your browser and navigate to the local development URL (usually `http://localhost:5173`)
 
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
+### Hardware Setup
 
-```ts
-// store.ts
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
+1. Connect your OpenDrop device to your computer via USB
+2. In the web interface, click "Request New Port" to select your device
+3. Configure the baud rate (default: 115200)
+4. Click "Start Game" to begin playing
+
+## 🎯 How to Play
+
+### Tetris
+
+- The game uses water droplets as Tetris pieces (tetrominoes)
+- Droplets are controlled by activating/deactivating electrodes
+- Complete horizontal lines to clear them
+- The game ends when pieces reach the top level
+
+### Controls
+
+- **A / D** or **← / →**: Move pieces left/right
+- **R**: Rotate the current piece
+- The game automatically moves pieces down at configurable intervals
+- Special reservoir electrodes manage droplet supply and drainage
+
+## 🛠️ Technical Architecture
+
+### Core Components
+
+- **Game Engine**: Abstract base class for implementing different games
+- **Tetris Implementation**: Complete Tetris game logic with droplet physics
+- **OpenDrop Controller**: Hardware communication and electrode management
+- **Serial Interface**: Web Serial API integration for real-time communication
+
+### Key Files
+
+- `src/lib/games/Game.ts`: Abstract game base class
+- `src/lib/games/Tetris/Tetris.ts`: Tetris game implementation
+- `src/lib/components/OpenDrop.svelte`: Hardware visualization component
+- `src/App.svelte`: Main application and serial communication
+
+## 🔧 Development
+
+### Project Structure
+
 ```
+src/
+├── lib/
+│   ├── components/
+│   │   ├── Game.svelte          # Game display component
+│   │   └── OpenDrop.svelte      # Hardware visualization
+│   └── games/
+│       ├── Game.ts              # Abstract game class
+│       ├── gameUtils.ts         # Utility functions
+│       └── Tetris/
+│           ├── Tetris.ts        # Tetris game logic
+│           └── Tetromino.ts     # Tetris piece definitions
+└── App.svelte                   # Main application
+```
+
+### Adding New Games
+
+1. Create a new game class extending the base `Game` class
+2. Implement required methods: `init()`, `tick()`, `input()`
+3. Add your game to the game selection interface
+4. Define game-specific electrode patterns and movement logic
+
+### Browser Compatibility
+
+This project requires Web Serial API support:
+
+- ✅ Chrome 89+
+- ✅ Edge 89+
+- ✅ Opera 75+
+- ❌ Firefox (not supported)
+- ❌ Safari (not supported)
+
+## 📡 Communication Protocol
+
+The application communicates with OpenDrop hardware using a custom serial protocol:
+
+- Electrode states are transmitted as binary data
+- Reservoir controls manage droplet supply
+- Real-time updates ensure responsive gameplay
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit pull requests or open issues for:
+
+- New game implementations
+- Hardware compatibility improvements
+- UI/UX enhancements
+- Bug fixes and optimizations
+
+## 📄 License
+
+This project is open source. Please check the license file for details.
+
+## 🔗 Related Projects
+
+- [OpenDrop](https://www.gaudi.ch/OpenDrop/): The original OpenDrop hardware project by Gaudi Labs
+- [OpenDrop GitHub](https://github.com/GaudiLabs/OpenDrop): Source code and documentation
+- [Steve Mould's Challenge Video](https://www.youtube.com/watch?v=rf-efIZI_Dg): The YouTube video that inspired this project
+- [Digital Microfluidics](https://en.wikipedia.org/wiki/Digital_microfluidics): Learn more about the technology
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**Serial port not detected:**
+
+- Ensure your browser supports Web Serial API
+- Check that the OpenDrop device is properly connected
+- Try refreshing the page and reconnecting
+
+**Game not responding:**
+
+- Verify the baud rate matches your hardware configuration
+- Check the browser console for communication errors
+- Ensure the serial port is not in use by another application
+
+**Droplet movement issues:**
+
+- Verify electrode connections and hardware functionality
+- Check that reservoir electrodes are properly configured
+- Ensure adequate droplet supply in the system
