@@ -162,15 +162,15 @@ export class Game {
     // Set the left special electrodes
     packet[0] = this.specialElectrodesLeft
 
-    // Set the main grid electrodes
-    for (let y = 0; y < this.gameSize.y; y++) {
+    // Set the main grid electrodes (pack by columns, not rows)
+    for (let x = 0; x < this.gameSize.x; x++) {
       let colByte = 0
-      for (let x = 0; x < this.gameSize.x; x++) {
+      for (let y = 0; y < this.gameSize.y; y++) {
         if (this.electrodes[y][x]) {
-          colByte |= 1 << x // Set the bit for the electrode
+          colByte |= 1 << y // Set the bit for the electrode at row y
         }
       }
-      packet[y + 1] = colByte // Store the column byte in the packet
+      packet[x + 1] = colByte // Store the column byte in the packet
     }
 
     // Set the right special electrodes
